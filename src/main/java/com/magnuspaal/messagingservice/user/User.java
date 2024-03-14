@@ -42,4 +42,8 @@ public class User extends BaseEntity {
     this.email = email;
     this.username = username;
   }
+
+  public boolean equals(Object user) {
+    return this.id.equals(((User) user).getId());
+  }
 }
