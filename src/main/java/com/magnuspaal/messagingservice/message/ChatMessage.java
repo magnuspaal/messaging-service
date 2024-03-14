@@ -7,14 +7,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Where(clause = "deleted_at IS NULL")
-public class Message extends BaseEntity  {
+@Table(name = "chat_message")
+@SQLRestriction("deleted_at IS NULL")
+public class ChatMessage extends BaseEntity  {
   @Id
   @SequenceGenerator(
       name = "message_sequence",
@@ -36,7 +37,7 @@ public class Message extends BaseEntity  {
   @JoinColumn(name="chat_id")
   private Chat chat;
 
-  public Message(String content, User user, Chat chat) {
+  public ChatMessage(String content, User user, Chat chat) {
     this.content = content;
     this.user = user;
     this.chat = chat;

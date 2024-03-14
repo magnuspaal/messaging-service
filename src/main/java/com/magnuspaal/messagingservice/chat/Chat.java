@@ -2,13 +2,13 @@ package com.magnuspaal.messagingservice.chat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.magnuspaal.messagingservice.common.BaseEntity;
-import com.magnuspaal.messagingservice.message.Message;
+import com.magnuspaal.messagingservice.message.ChatMessage;
 import com.magnuspaal.messagingservice.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
-@Where(clause = "deleted_at IS NULL")
+@SQLRestriction("deleted_at IS NULL")
 public class Chat extends BaseEntity {
   @Id
   @SequenceGenerator(
@@ -39,7 +39,7 @@ public class Chat extends BaseEntity {
 
   @JsonIgnore
   @OneToMany(mappedBy = "chat")
-  private List<Message> message;
+  private List<ChatMessage> message;
 
   public Chat(List<User> users) {
     this.users = users;

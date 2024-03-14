@@ -14,12 +14,11 @@ public class MessageService {
 
   private final MessageRepository messageRepository;
 
-  public Message createMessage(Message message) {
+  public ChatMessage createMessage(ChatMessage message) {
     return messageRepository.save(message);
   }
 
-  public List<Message> getChatMessages(Chat chat, Integer limit, Integer offset) {
-    List<Message> messages = messageRepository.findChatMessages(chat, limit, offset).orElse(new ArrayList<>());
-    return messages;
+  public List<ChatMessage> getChatMessages(Chat chat, Integer limit, Integer offset) {
+    return messageRepository.findChatMessages(chat, limit, offset).orElse(new ArrayList<>());
   }
 }
