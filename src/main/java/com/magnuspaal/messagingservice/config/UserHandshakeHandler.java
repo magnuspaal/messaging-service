@@ -19,11 +19,11 @@ public class UserHandshakeHandler extends DefaultHandshakeHandler {
 
   @Override
   protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
-    Iterator cookies = Arrays.stream(request.getHeaders().get("cookie").get(0).split("; ")).iterator();
+    Iterator<String> cookies = Arrays.stream(Objects.requireNonNull(request.getHeaders().get("cookie")).get(0).split("; ")).iterator();
     String jwt = null;
 
     while(cookies.hasNext()) {
-      String next = cookies.next().toString();
+      String next = cookies.next();
       if (next.startsWith("authToken=")) {
         jwt = next.substring(10);
         break;
@@ -33,8 +33,7 @@ public class UserHandshakeHandler extends DefaultHandshakeHandler {
     Authentication authentication = jwtService.validateJWT(jwt);
 
     User user = (User) authentication.getPrincipal();
-    UserPrincipal userPrincipal = new UserPrincipal(user.getId().toString());
 
-    return userPrincipal;
+    return new UserPrincipal(user.getId().toString());
   }
 }

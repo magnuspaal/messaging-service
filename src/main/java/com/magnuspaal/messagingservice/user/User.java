@@ -32,8 +32,12 @@ public class User extends BaseEntity {
   private List<Chat> chats;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "owner")
   private List<ChatMessage> messages;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "sender")
+  private List<ChatMessage> sentMessages;
 
   public User(Long id, String firstName, String lastName, String email, String username) {
     this.id = id;

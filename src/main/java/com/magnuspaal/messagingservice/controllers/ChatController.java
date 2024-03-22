@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api/v1/chat")
+@RequestMapping("/chat")
 @RequiredArgsConstructor
 public class ChatController {
 
@@ -34,13 +34,13 @@ public class ChatController {
     if (!chat.getUsers().contains(authenticatedUser)) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
-    return ResponseEntity.ok(messageService.getChatMessages(chat, limit, offset));
+    return ResponseEntity.ok(messageService.getChatMessages(authenticatedUser, chat, limit, offset));
   }
 
   @PostMapping()
   public ResponseEntity<Chat> createChat(@RequestBody CreateChatDTO body) {
     List<User> dbUsers = new ArrayList<>();
-    body.getUsers().stream().forEach(user -> {
+    body.getUsers().forEach(user -> {
       try {
         dbUsers.add(userService.getUserById(user.getId()));
       } catch (NoSuchElementException exception) {

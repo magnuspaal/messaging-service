@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 
   private final UserService userService;
   private final AuthenticationService authenticationService;
 
-  @GetMapping("/user/{id}/chats")
+  @GetMapping("/{id}/chats")
   public ResponseEntity<List<Chat>> getUserChats(@PathVariable("id") Long userId) {
     User authenticatedUser = authenticationService.getAuthenticatedUser();
     if (!Objects.equals(authenticatedUser.getId(), userId)) {

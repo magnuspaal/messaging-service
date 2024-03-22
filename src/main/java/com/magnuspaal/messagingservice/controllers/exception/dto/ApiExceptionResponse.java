@@ -1,4 +1,4 @@
-package exception.dto;
+package com.magnuspaal.messagingservice.controllers.exception.dto;
 
 
 import com.magnuspaal.messagingservice.common.BaseResponse;

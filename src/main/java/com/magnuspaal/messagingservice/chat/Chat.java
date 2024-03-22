@@ -39,7 +39,7 @@ public class Chat extends BaseEntity {
 
   @JsonIgnore
   @OneToMany(mappedBy = "chat")
-  private List<ChatMessage> message;
+  private List<ChatMessage> messages;
 
   public Chat(List<User> users) {
     this.users = users;
