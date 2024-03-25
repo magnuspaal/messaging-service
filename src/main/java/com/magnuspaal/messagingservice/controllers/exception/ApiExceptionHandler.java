@@ -14,12 +14,13 @@ import java.util.List;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-  @ExceptionHandler(Throwable.class)
+  @ExceptionHandler(ApiException.class)
   public static ResponseEntity<BaseResponse> handleError(HttpServletRequest req, ApiException ex) {
     if (ex.getStatusCode() != null) {
       ArrayList<String> codes = new ArrayList<>(List.of(ex.getMessage()));
       return ResponseEntity.status(ex.getStatusCode()).body(new ApiExceptionResponse(codes));
+    } else {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
   }
 }
