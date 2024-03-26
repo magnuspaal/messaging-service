@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/user")
@@ -29,10 +28,7 @@ public class UserController {
     User authenticatedUser = authenticationService.getAuthenticatedUser();
     Long userId = authenticatedUser.getId();
     List<Chat> chats = userService.getUserChats(userId);
-    chats.forEach(chat -> {
-      List<User> filteredUsers = chat.getUsers().stream().filter(user -> !Objects.equals(user.getId(), userId)).toList();
-      chat.setUsers(filteredUsers);
-    });
+    chats.forEach(chat -> chatService.excludeUserFromChat(chat, authenticatedUser.getId()));
     return ResponseEntity.ok(chats);
   }
 

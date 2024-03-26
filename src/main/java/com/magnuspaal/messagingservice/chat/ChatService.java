@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,5 +32,10 @@ public class ChatService {
       }
     }
     return null;
+  }
+
+  public void excludeUserFromChat(Chat chat, Long userId) {
+    List<User> filteredUsers = chat.getUsers().stream().filter(user -> !Objects.equals(user.getId(), userId)).toList();
+    chat.setUsers(filteredUsers);
   }
 }

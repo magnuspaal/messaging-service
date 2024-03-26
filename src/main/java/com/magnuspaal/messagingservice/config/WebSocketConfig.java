@@ -24,9 +24,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/chat")
+    registry.addEndpoint("/messaging")
         .setHandshakeHandler(new UserHandshakeHandler(jwtService))
-        .setAllowedOrigins(apiProperties.getAllowedOrigins().stream().toArray(String[]::new))
+        .setAllowedOrigins(apiProperties.getAllowedOrigins().toArray(String[]::new))
         .withSockJS();
   }
 }

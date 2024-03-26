@@ -27,6 +27,17 @@ public class ChatController {
   private final UserService userService;
   private final AuthenticationService authenticationService;
 
+  @GetMapping("/{id}")
+  public ResponseEntity<Chat> getChat(@PathVariable Long id) {
+    User authenticatedUser = authenticationService.getAuthenticatedUser();
+    Chat chat = chatService.getChatById(id);
+    if (!chat.getUsers().contains(authenticatedUser)) {
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+    chatService.excludeUserFromChat(chat, authenticatedUser.getId());
+    return ResponseEntity.ok(chat);
+  }
+
   @GetMapping("/{id}/messages")
   public ResponseEntity<List<ChatMessage>> getChatMessages(@PathVariable Long id, @RequestParam Integer limit, @RequestParam Integer offset) {
     User authenticatedUser = authenticationService.getAuthenticatedUser();
