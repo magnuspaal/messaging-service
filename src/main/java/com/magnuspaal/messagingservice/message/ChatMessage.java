@@ -1,5 +1,6 @@
 package com.magnuspaal.messagingservice.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.magnuspaal.messagingservice.chat.Chat;
 import com.magnuspaal.messagingservice.common.BaseEntity;
 import com.magnuspaal.messagingservice.user.User;
@@ -50,7 +51,16 @@ public class ChatMessage extends BaseEntity  {
 
   @ManyToOne
   @JoinColumn(name="chat_id")
+  @JsonIgnore
   private Chat chat;
+
+  @Transient
+  private Long chatId;
+
+  @PostLoad
+  private void postLoad() {
+    this.chatId = chat.getId();
+  }
 
   public ChatMessage(@NotNull Long chatMessageId, Long userEncryptionVersion, byte[] content, User sender, User owner, Chat chat) {
     this.chatMessageId = chatMessageId;

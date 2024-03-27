@@ -86,6 +86,7 @@ public class MessagingController {
         User chatUser = userEncryptedMessage.getUser();
 
         ChatMessage message = messageService.createMessage(new ChatMessage(chatMessageId, userEncryption.getVersion(), encryptedMessage, sender, chatUser, chat));
+        message.setChatId(chat.getId());
         template.convertAndSendToUser(chatUser.getId().toString(),"/topic/message", message);
       }
     }
