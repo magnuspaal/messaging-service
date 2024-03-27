@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   auth-api:
-    image: registry.digitalocean.com/magnus-images/other:messaging-service-0.0.3
+    image: registry.digitalocean.com/magnus-images/other:messaging-service-0.0.4
     env_file: '.env'
     container_name: messaging-service
     networks:
