@@ -4,6 +4,8 @@ import com.magnuspaal.messagingservice.auth.AuthenticationService;
 import com.magnuspaal.messagingservice.chat.Chat;
 import com.magnuspaal.messagingservice.chat.ChatService;
 import com.magnuspaal.messagingservice.controllers.exception.exceptions.NoUserEncryptionException;
+import com.magnuspaal.messagingservice.message.ChatMessage;
+import com.magnuspaal.messagingservice.message.MessageService;
 import com.magnuspaal.messagingservice.user.User;
 import com.magnuspaal.messagingservice.user.UserService;
 import com.magnuspaal.messagingservice.userencryption.UserEncryptionService;
@@ -22,12 +24,17 @@ public class UserController {
   private final AuthenticationService authenticationService;
   private final ChatService chatService;
   private final UserEncryptionService userEncryptionService;
+  private final MessageService messageService;
 
   @GetMapping("/chats")
   public ResponseEntity<List<Chat>> getUserChats() {
     User authenticatedUser = authenticationService.getAuthenticatedUser();
     Long userId = authenticatedUser.getId();
     List<Chat> chats = userService.getUserChats(userId);
+    for (Chat chat: chats) {
+      List<ChatMessage> messages = messageService.getChatMessages(authenticatedUser, chat, 1, 0);
+      chat.setLatestMessage(messages.stream().findFirst().orElse(null));
+    }
     chats.forEach(chat -> chatService.excludeUserFromChat(chat, authenticatedUser.getId()));
     return ResponseEntity.ok(chats);
   }

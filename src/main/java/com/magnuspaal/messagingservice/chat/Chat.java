@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @SQLRestriction("deleted_at IS NULL")
+@ToString
 public class Chat extends BaseEntity {
   @Id
   @SequenceGenerator(
@@ -40,6 +42,8 @@ public class Chat extends BaseEntity {
   @JsonIgnore
   @OneToMany(mappedBy = "chat")
   private List<ChatMessage> messages;
+
+  @Transient ChatMessage latestMessage;
 
   public Chat(List<User> users) {
     this.users = users;
