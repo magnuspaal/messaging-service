@@ -2,6 +2,7 @@ package com.magnuspaal.messagingservice.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.magnuspaal.messagingservice.chat.Chat;
+import com.magnuspaal.messagingservice.chatuser.ChatUser;
 import com.magnuspaal.messagingservice.common.BaseEntity;
 import com.magnuspaal.messagingservice.message.ChatMessage;
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -31,8 +33,8 @@ public class User extends BaseEntity {
   private String username;
 
   @JsonIgnore
-  @ManyToMany(mappedBy = "users")
-  private List<Chat> chats;
+  @OneToMany(mappedBy = "user")
+  private List<ChatUser> chatUsers;
 
   @JsonIgnore
   @OneToMany(mappedBy = "owner")
@@ -52,5 +54,14 @@ public class User extends BaseEntity {
 
   public boolean equals(Object user) {
     return this.id.equals(((User) user).getId());
+  }
+
+  @JsonIgnore
+  public List<Chat> getChats() {
+    List<Chat> chats = new ArrayList<>();
+    for (ChatUser chatUser: this.chatUsers) {
+      chats.add(chatUser.getChat());
+    }
+    return chats;
   }
 }

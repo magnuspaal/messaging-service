@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="mpaal (generated)" id="1712304399087-1">
+        <createSequence incrementBy="1" sequenceName="seen_messages_sequence" startValue="1"/>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1712304399087-2">
+        <createTable tableName="seen_messages_range">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="seen_messages_rangePK"/>
+            </column>
+            <column name="range_end" type="BIGINT"/>
+            <column name="range_start" type="BIGINT"/>
+            <column name="chat_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1712304399087-3">
+        <addForeignKeyConstraint baseColumnNames="chat_id,user_id" baseTableName="seen_messages_range" constraintName="FK137bnep5y8fy362qlxi5qec0d" deferrable="false" initiallyDeferred="false" referencedColumnNames="chat_id,user_id" referencedTableName="chat_user" validate="true"/>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1712304399087-4">
+        <dropColumn columnName="last_seen_chat_message_id" tableName="chat_user"/>
+    </changeSet>
+</databaseChangeLog>

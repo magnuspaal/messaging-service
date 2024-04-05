@@ -3,6 +3,8 @@ package com.magnuspaal.messagingservice.controllers;
 import com.magnuspaal.messagingservice.auth.AuthenticationService;
 import com.magnuspaal.messagingservice.chat.Chat;
 import com.magnuspaal.messagingservice.chat.ChatService;
+import com.magnuspaal.messagingservice.chatuser.ChatUser;
+import com.magnuspaal.messagingservice.chatuser.ChatUserService;
 import com.magnuspaal.messagingservice.message.ChatMessage;
 import com.magnuspaal.messagingservice.message.MessageService;
 import com.magnuspaal.messagingservice.user.User;
@@ -13,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @RestController
 @RequestMapping("/chat")
@@ -26,6 +26,7 @@ public class ChatController {
   private final MessageService messageService;
   private final UserService userService;
   private final AuthenticationService authenticationService;
+  private final ChatUserService chatUserService;
 
   @GetMapping("/{id}")
   public ResponseEntity<Chat> getChat(@PathVariable Long id) {
@@ -34,7 +35,6 @@ public class ChatController {
     if (!chat.getUsers().contains(authenticatedUser)) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
-    chatService.excludeUserFromChat(chat, authenticatedUser.getId());
     return ResponseEntity.ok(chat);
   }
 
@@ -42,10 +42,18 @@ public class ChatController {
   public ResponseEntity<List<ChatMessage>> getChatMessages(@PathVariable Long id, @RequestParam Integer limit, @RequestParam Integer offset) {
     User authenticatedUser = authenticationService.getAuthenticatedUser();
     Chat chat = chatService.getChatById(id);
-    if (!chat.getUsers().contains(authenticatedUser)) {
+
+    ChatUser chatUser = chatUserService.getChatUserFromChat(chat, authenticatedUser);
+
+    if (chatUser == null) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
-    return ResponseEntity.ok(messageService.getChatMessages(authenticatedUser, chat, limit, offset));
+
+    List<ChatMessage> chatMessages = messageService.getChatMessages(authenticatedUser, chat, limit, offset);
+
+    chatUserService.updateSeenMessagesRanges(chatUser, chatMessages);
+
+    return ResponseEntity.ok(chatMessages);
   }
 
   @PostMapping()

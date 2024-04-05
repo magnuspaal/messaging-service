@@ -35,7 +35,6 @@ public class UserController {
       List<ChatMessage> messages = messageService.getChatMessages(authenticatedUser, chat, 1, 0);
       chat.setLatestMessage(messages.stream().findFirst().orElse(null));
     }
-    chats.forEach(chat -> chatService.excludeUserFromChat(chat, authenticatedUser.getId()));
     return ResponseEntity.ok(chats);
   }
 

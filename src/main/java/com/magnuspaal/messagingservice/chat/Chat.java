@@ -1,6 +1,7 @@
 package com.magnuspaal.messagingservice.chat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.magnuspaal.messagingservice.chatuser.ChatUser;
 import com.magnuspaal.messagingservice.common.BaseEntity;
 import com.magnuspaal.messagingservice.message.ChatMessage;
 import com.magnuspaal.messagingservice.user.User;
@@ -11,6 +12,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -32,20 +34,29 @@ public class Chat extends BaseEntity {
   )
   private Long id;
 
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(
-      name = "chat_user",
-      joinColumns = @JoinColumn(name = "chat_id"),
-      inverseJoinColumns = @JoinColumn(name = "user_id"))
-  private List<User> users;
+  @OneToMany(mappedBy = "chat", fetch = FetchType.EAGER)
+  private List<ChatUser> chatUsers;
 
   @JsonIgnore
   @OneToMany(mappedBy = "chat")
   private List<ChatMessage> messages;
 
-  @Transient ChatMessage latestMessage;
+  @Transient
+  private ChatMessage latestMessage;
 
   public Chat(List<User> users) {
-    this.users = users;
+    this.chatUsers = new ArrayList<>();
+    for(User user: users) {
+      this.chatUsers.add(new ChatUser(user, this));
+    }
+  }
+
+  @JsonIgnore
+  public List<User> getUsers() {
+    List<User> chats = new ArrayList<>();
+    for (ChatUser chatUser: this.chatUsers) {
+      chats.add(chatUser.getUser());
+    }
+    return chats;
   }
 }
