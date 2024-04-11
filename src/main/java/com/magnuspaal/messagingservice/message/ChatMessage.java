@@ -86,4 +86,12 @@ public class ChatMessage extends BaseEntity  {
     this.chat = chat;
     this.chatId = chat.getId();
   }
+
+  public ChatMessage(ChatMessageType type, User sender, Chat chat, String content) {
+    this.type = type.toString();
+    this.sender = sender;
+    this.chat = chat;
+    this.chatId = chat.getId();
+    this.content = content.getBytes();
+  }
 }

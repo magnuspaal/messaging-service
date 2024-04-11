@@ -27,9 +27,14 @@ public class ChatUserService {
     return chatUsers.stream().filter((chatUser1 -> Objects.equals(chatUser1.getUser().getId(), user.getId()))).findFirst().orElse(null);
   }
 
-  public void updateSeenMessagesRanges(ChatUser chatUser, List<ChatMessage> chatMessages) {
-    SeenMessagesRange currentRange = findChatMessagesRange(chatUser, chatMessages);
+  public void updateSeenMessagesRangesFromChatMessages(ChatUser chatUser, List<ChatMessage> chatMessages) {
+    if (chatMessages.size() != 0) {
+      SeenMessagesRange currentRange = findChatMessagesRange(chatUser, chatMessages);
+      updateSeenMessagesRanges(chatUser, currentRange);
+    }
+  }
 
+  public void updateSeenMessagesRanges(ChatUser chatUser, SeenMessagesRange currentRange) {
     List<SeenMessagesRange> ranges = chatUser.getSeenMessagesRanges();
 
     if (ranges == null || ranges.isEmpty()) {

@@ -1,6 +1,9 @@
 package com.magnuspaal.messagingservice.messaging;
 
 import com.magnuspaal.messagingservice.chat.Chat;
+import com.magnuspaal.messagingservice.chatuser.ChatUser;
+import com.magnuspaal.messagingservice.chatuser.ChatUserService;
+import com.magnuspaal.messagingservice.chatuser.seenmessagesrange.SeenMessagesRange;
 import com.magnuspaal.messagingservice.controllers.exception.exceptions.NoUserEncryptionException;
 import com.magnuspaal.messagingservice.controllers.record.UserEncryptedMessage;
 import com.magnuspaal.messagingservice.message.ChatMessage;
@@ -31,6 +34,7 @@ public class MessagingHandler {
   private final UserEncryptionService userEncryptionService;
   private final SimpMessagingTemplate template;
   private final MessageService messageService;
+  private final ChatUserService chatUserService;
 
   public void handleTextMessage(Chat chat, User sender, String content) {
     Long chatMessageId = messageService.getChatMessageCount(chat) + 1;
@@ -89,6 +93,22 @@ public class MessagingHandler {
       if (!chatUser.equals(sender)) {
         ChatMessage message = new ChatMessage(ChatMessageType.writing_end, sender, chat);
         template.convertAndSendToUser(chatUser.getId().toString(),"/topic/message", message);
+      }
+    }
+  }
+
+  public void handleSeenMessage(User sender, Chat chat, Long chatMessageId) {
+    ChatUser chatUser = chatUserService.getChatUserFromChat(chat, sender);
+    SeenMessagesRange currentRange = new SeenMessagesRange(chatUser, chatMessageId, chatMessageId);
+    chatUserService.updateSeenMessagesRanges(chatUser, currentRange);
+    sendSeenMessage(sender, chat, chatMessageId);
+  }
+
+  public void sendSeenMessage(User sender, Chat chat, Long chatMessageId) {
+    for (User user: chat.getUsers()) {
+      if (!user.equals(sender)) {
+        ChatMessage message = new ChatMessage(ChatMessageType.seen, sender, chat, chatMessageId.toString());
+        template.convertAndSendToUser(user.getId().toString(),"/topic/message", message);
       }
     }
   }

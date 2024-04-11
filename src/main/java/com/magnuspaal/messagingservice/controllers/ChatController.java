@@ -7,6 +7,7 @@ import com.magnuspaal.messagingservice.chatuser.ChatUser;
 import com.magnuspaal.messagingservice.chatuser.ChatUserService;
 import com.magnuspaal.messagingservice.message.ChatMessage;
 import com.magnuspaal.messagingservice.message.MessageService;
+import com.magnuspaal.messagingservice.messaging.MessagingHandler;
 import com.magnuspaal.messagingservice.user.User;
 import com.magnuspaal.messagingservice.user.UserService;
 import com.magnuspaal.messagingservice.controllers.dto.CreateChatDTO;
@@ -27,6 +28,7 @@ public class ChatController {
   private final UserService userService;
   private final AuthenticationService authenticationService;
   private final ChatUserService chatUserService;
+  private final MessagingHandler messagingHandler;
 
   @GetMapping("/{id}")
   public ResponseEntity<Chat> getChat(@PathVariable Long id) {
@@ -51,7 +53,15 @@ public class ChatController {
 
     List<ChatMessage> chatMessages = messageService.getChatMessages(authenticatedUser, chat, limit, offset);
 
-    chatUserService.updateSeenMessagesRanges(chatUser, chatMessages);
+    chatUserService.updateSeenMessagesRangesFromChatMessages(chatUser, chatMessages);
+
+    chatMessages.stream()
+        .max(Comparator.comparing(ChatMessage::getChatMessageId))
+        .ifPresent(latestMessage -> {
+          if (latestMessage.getChatMessageId() >= chatUser.getLatestSeenMessage()) {
+            messagingHandler.sendSeenMessage(authenticatedUser, chat, latestMessage.getChatMessageId());
+          }
+        });
 
     return ResponseEntity.ok(chatMessages);
   }

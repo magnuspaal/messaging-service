@@ -2,7 +2,6 @@ package com.magnuspaal.messagingservice.controllers;
 
 import com.magnuspaal.messagingservice.chat.Chat;
 import com.magnuspaal.messagingservice.chat.ChatService;
-import com.magnuspaal.messagingservice.message.MessageService;
 import com.magnuspaal.messagingservice.message.dto.MessageRequest;
 import com.magnuspaal.messagingservice.messaging.MessagingHandler;
 import com.magnuspaal.messagingservice.user.User;
@@ -35,6 +34,7 @@ public class MessagingController {
         case text -> messagingHandler.handleTextMessage(chat, sender, content);
         case writing -> messagingHandler.handleWritingMessage(chat, sender);
         case writing_end -> messagingHandler.handleWritingEndMessage(chat, sender);
+        case seen -> messagingHandler.handleSeenMessage(sender, chat, Long.parseLong(content));
       }
     }
   }
