@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="mpaal (generated)" id="1712932981539-1">
+        <addColumn tableName="chat_settings">
+            <column name="my_chat_bubble_color" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1712932981539-2">
+        <addColumn tableName="chat_settings">
+            <column name="my_chat_text_color" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1712932981539-3">
+        <addColumn tableName="chat_settings">
+            <column name="their_chat_bubble_color" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1712932981539-4">
+        <addColumn tableName="chat_settings">
+            <column name="their_chat_text_color" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1712932981539-5">
+        <dropColumn columnName="chat_me_color" tableName="chat_settings"/>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1712932981539-6">
+        <dropColumn columnName="chat_you_color" tableName="chat_settings"/>
+    </changeSet>
+</databaseChangeLog>

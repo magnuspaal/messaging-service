@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="mpaal (generated)" id="1712925452998-1">
+        <createSequence incrementBy="1" sequenceName="chat_settings_sequence" startValue="1"/>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1712925452998-2">
+        <createTable tableName="chat_settings">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="chat_settingsPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="deleted_at" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="chat_me_color" type="VARCHAR(255)"/>
+            <column name="chat_you_color" type="VARCHAR(255)"/>
+            <column name="chat_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1712925452998-3">
+        <addUniqueConstraint columnNames="chat_id" constraintName="UC_CHAT_SETTINGSCHAT_ID_COL" tableName="chat_settings"/>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1712925452998-4">
+        <addForeignKeyConstraint baseColumnNames="chat_id" baseTableName="chat_settings" constraintName="FKp7f4j2jihnfhenj26h2x25bds" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="chat" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

@@ -3,8 +3,11 @@ package com.magnuspaal.messagingservice.controllers;
 import com.magnuspaal.messagingservice.auth.AuthenticationService;
 import com.magnuspaal.messagingservice.chat.Chat;
 import com.magnuspaal.messagingservice.chat.ChatService;
+import com.magnuspaal.messagingservice.chat.chatsettings.ChatSettings;
+import com.magnuspaal.messagingservice.chat.chatsettings.ChatSettingsRepository;
 import com.magnuspaal.messagingservice.chatuser.ChatUser;
 import com.magnuspaal.messagingservice.chatuser.ChatUserService;
+import com.magnuspaal.messagingservice.controllers.dto.UpdateChatSettingsDTO;
 import com.magnuspaal.messagingservice.message.ChatMessage;
 import com.magnuspaal.messagingservice.message.MessageService;
 import com.magnuspaal.messagingservice.messaging.MessagingHandler;
@@ -16,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 @RestController
@@ -29,6 +33,7 @@ public class ChatController {
   private final AuthenticationService authenticationService;
   private final ChatUserService chatUserService;
   private final MessagingHandler messagingHandler;
+  private final ChatSettingsRepository chatSettingsRepository;
 
   @GetMapping("/{id}")
   public ResponseEntity<Chat> getChat(@PathVariable Long id) {
@@ -64,6 +69,36 @@ public class ChatController {
         });
 
     return ResponseEntity.ok(chatMessages);
+  }
+
+  @PatchMapping("/{id}/settings")
+  public ResponseEntity<ChatSettings> updateChatSettings(@PathVariable Long id, @RequestBody UpdateChatSettingsDTO body) {
+    Chat chat = chatService.getChatById(id);
+    ChatSettings chatSettings = chat.getChatSettings();
+
+    if (chatSettings == null) {
+      chatSettings = new ChatSettings(chat);
+    }
+
+    try {
+      Class<?> internClass= ChatSettings.class;
+      Field[] internFields=internClass.getDeclaredFields();
+
+      for(Field field : internFields){
+        field.setAccessible(true);
+
+        Object value=field.get(body.getChatSettings());
+        if(value!=null){
+          field.set(chatSettings,value);
+        }
+        field.setAccessible(false);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    ChatSettings returnedChatSettings = chatSettingsRepository.save(chatSettings);
+    return ResponseEntity.ok(returnedChatSettings);
   }
 
   @PostMapping()
