@@ -33,7 +33,7 @@ public class User extends BaseEntity {
   private String username;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
   private List<ChatUser> chatUsers;
 
   @JsonIgnore
@@ -54,6 +54,11 @@ public class User extends BaseEntity {
 
   public boolean equals(Object user) {
     return this.id.equals(((User) user).getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return this.id.hashCode();
   }
 
   @JsonIgnore

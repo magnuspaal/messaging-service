@@ -51,10 +51,10 @@ public class Chat extends BaseEntity {
 
   @JsonIgnore
   public List<User> getUsers() {
-    List<User> chats = new ArrayList<>();
+    List<User> users = new ArrayList<>();
     for (ChatUser chatUser: this.chatUsers) {
-      chats.add(chatUser.getUser());
+      users.add(chatUser.getUser());
     }
-    return chats;
+    return users;
   }
 }

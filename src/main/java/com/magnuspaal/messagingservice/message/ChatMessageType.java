@@ -5,5 +5,7 @@ public enum ChatMessageType {
   text,
   writing,
   writing_end,
-  seen
+  seen,
+  active,
+  connect
 }

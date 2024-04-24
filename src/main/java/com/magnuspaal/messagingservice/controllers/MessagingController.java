@@ -27,7 +27,10 @@ public class MessagingController {
   public void getMessage(@Payload MessageRequest messageRequest, Principal principal) {
     if (principal.getName().equals(messageRequest.getFrom())) {
       User sender = userService.getUserById(Long.parseLong(principal.getName()));
-      Chat chat = chatService.getChatById(Long.parseLong(messageRequest.getTo()));
+      Chat chat = null;
+      if (messageRequest.getTo() != null) {
+        chat = chatService.getChatById(Long.parseLong(messageRequest.getTo()));
+      }
       String content = messageRequest.getContent();
 
       switch (messageRequest.getType()) {
@@ -35,6 +38,8 @@ public class MessagingController {
         case writing -> messagingHandler.handleWritingMessage(chat, sender);
         case writing_end -> messagingHandler.handleWritingEndMessage(chat, sender);
         case seen -> messagingHandler.handleSeenMessage(sender, chat, Long.parseLong(content));
+        case active -> messagingHandler.handleActiveMessage(sender, false);
+        case connect -> messagingHandler.handleActiveMessage(sender, true);
       }
     }
   }

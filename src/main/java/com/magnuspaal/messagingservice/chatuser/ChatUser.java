@@ -21,7 +21,7 @@ public class ChatUser extends BaseEntity {
   @EmbeddedId
   private ChatUserKey id;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   @MapsId("userId")
   @JoinColumn(name = "user_id")
   private User user;

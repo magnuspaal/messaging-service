@@ -11,6 +11,7 @@ import com.magnuspaal.messagingservice.message.ChatMessageExceptionMessage;
 import com.magnuspaal.messagingservice.message.ChatMessageType;
 import com.magnuspaal.messagingservice.message.MessageService;
 import com.magnuspaal.messagingservice.user.User;
+import com.magnuspaal.messagingservice.user.UserService;
 import com.magnuspaal.messagingservice.userencryption.UserEncryption;
 import com.magnuspaal.messagingservice.userencryption.UserEncryptionService;
 import com.magnuspaal.messagingservice.utils.RSAUtil;
@@ -25,7 +26,9 @@ import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +38,7 @@ public class MessagingHandler {
   private final SimpMessagingTemplate template;
   private final MessageService messageService;
   private final ChatUserService chatUserService;
+  private final UserService userService;
 
   public void handleTextMessage(Chat chat, User sender, String content) {
     Long chatMessageId = messageService.getChatMessageCount(chat) + 1;
@@ -102,6 +106,23 @@ public class MessagingHandler {
     SeenMessagesRange currentRange = new SeenMessagesRange(chatUser, chatMessageId, chatMessageId);
     chatUserService.updateSeenMessagesRanges(chatUser, currentRange);
     sendSeenMessage(sender, chat, chatMessageId);
+  }
+
+  public void handleActiveMessage(User sender, boolean isConnectMessage) {
+    List<Chat> chats = userService.getUserChats(sender.getId());
+
+    Set<User> users = new HashSet<>();
+
+    for (Chat chat: chats) {
+      users.addAll(chat.getUsers());
+    }
+
+    for (User user: users) {
+      if (!sender.equals(user)) {
+        ChatMessage message = new ChatMessage(isConnectMessage ? ChatMessageType.connect : ChatMessageType.active, sender, user);
+        template.convertAndSendToUser(user.getId().toString(),"/topic/message", message);
+      }
+    }
   }
 
   public void sendSeenMessage(User sender, Chat chat, Long chatMessageId) {
