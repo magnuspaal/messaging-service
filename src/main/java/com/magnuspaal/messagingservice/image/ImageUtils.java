@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.*;
+import java.util.Objects;
 
 public class ImageUtils {
 
@@ -65,9 +66,9 @@ public class ImageUtils {
     return Math.round((float) image.getWidth() / image.getHeight() * 100000);
   }
 
-  public static byte[] getImageBytes(BufferedImage image) throws IOException {
+  public static byte[] getImageBytes(BufferedImage image, String imageType) throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    ImageIO.write(image, "jpg", baos);
+    ImageIO.write(image, imageType, baos);
     return baos.toByteArray();
   }
 
@@ -100,7 +101,9 @@ public class ImageUtils {
       BufferedImage bufferedImage = compressImage(image);
       String filename = getImageFilename();
       int imageRatio = getImageRatio(bufferedImage);
-      byte[] compressedImage = getImageBytes(bufferedImage);
+
+      String imageType = Objects.requireNonNull(image.getContentType()).split("/")[1];
+      byte[] compressedImage = getImageBytes(bufferedImage, imageType);
 
       return new CompressedImage(filename, compressedImage, imageRatio);
     } catch (ImageProcessingException | IOException e) {
