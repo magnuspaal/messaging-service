@@ -76,14 +76,13 @@ public class JwtService {
           claims.get("username", String.class)
       );
 
-      userService.updateOrCreateUser(user);
+        userService.updateOrCreateUser(user);
 
-      UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+      return new UsernamePasswordAuthenticationToken(
           user,
           null,
           Collections.singleton((GrantedAuthority) () -> "USER")
       );
-      return authToken;
     }
     return null;
   }

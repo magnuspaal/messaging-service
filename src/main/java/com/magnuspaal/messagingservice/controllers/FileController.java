@@ -58,7 +58,7 @@ public class FileController {
     AESEncryptionData aesEncryptionData = ImageUtils.getSymmetricalEncryptionData();
     byte[] encryptedImage = ImageUtils.encryptImage(compressedImage.image(), aesEncryptionData);
 
-    fileService.uploadFile(encryptedImage, compressedImage.filename(), authToken, chat.getId());
+    fileService.uploadFile(encryptedImage, compressedImage.filename(), authToken, chat, compressedImage.imageRatio());
 
     List<UserChatImage> userChatImages = new ArrayList<>();
     for (User user: chat.getUsers()) {

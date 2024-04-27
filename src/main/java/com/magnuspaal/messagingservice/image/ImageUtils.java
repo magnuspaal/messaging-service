@@ -23,7 +23,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.*;
-import java.util.stream.Collectors;
 
 public class ImageUtils {
 
@@ -58,10 +57,12 @@ public class ImageUtils {
     return Scalr.resize(inputImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH, 500);
   }
 
-  public static String getImageFilename(BufferedImage image, Chat chat) {
-    int ratio = Math.round((float) image.getWidth() / image.getHeight() * 100000);
-    CharSequence userIds = chat.getUsers().stream().map((user) -> user.getId().toString()).collect(Collectors.joining("-"));
-    return RandomStringGenerator.getRandomString() + "-" + ratio + "_" + userIds + ".jpg";
+  public static String getImageFilename() {
+    return RandomStringGenerator.getRandomString() + ".jpg";
+  }
+
+  public static int getImageRatio(BufferedImage image) {
+    return Math.round((float) image.getWidth() / image.getHeight() * 100000);
   }
 
   public static byte[] getImageBytes(BufferedImage image) throws IOException {
@@ -76,7 +77,7 @@ public class ImageUtils {
     int orientation;
 
     try {
-      ExifIFD0Directory exifIFD0 = metadata.getDirectory(ExifIFD0Directory.class);
+      ExifIFD0Directory exifIFD0 = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
       if (exifIFD0 != null) {
         orientation = exifIFD0.getInt(ExifIFD0Directory.TAG_ORIENTATION);
       } else {
@@ -97,10 +98,11 @@ public class ImageUtils {
   public static CompressedImage processImage(MultipartFile image, Chat chat) {
     try {
       BufferedImage bufferedImage = compressImage(image);
-      String filename = getImageFilename(bufferedImage, chat);
+      String filename = getImageFilename();
+      int imageRatio = getImageRatio(bufferedImage);
       byte[] compressedImage = getImageBytes(bufferedImage);
 
-      return new CompressedImage(filename, compressedImage);
+      return new CompressedImage(filename, compressedImage, imageRatio);
     } catch (ImageProcessingException | IOException e) {
       throw new RuntimeException(e);
     }
