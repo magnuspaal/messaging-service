@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class ApiProperties {
   private final List<String> allowedOrigins;
-  private String fileServerUrl;
+  private final String fileServerUrl;
 
   @ConstructorBinding
   public ApiProperties(List<String> allowedOrigins, String fileServerUrl) {

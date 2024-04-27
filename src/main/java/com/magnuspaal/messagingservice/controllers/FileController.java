@@ -42,7 +42,7 @@ public class FileController {
   private final AuthenticationService authenticationService;
   private final MessageService messageService;
 
-  @PostMapping(value = "/upload/{id}", consumes="multipart/form-data")
+  @PostMapping(value = "/upload/{id}")
   public ResponseEntity<BaseResponse> uploadImage(
       @CookieValue("authToken") String authToken,
       @RequestParam(name = "image") MultipartFile image,
