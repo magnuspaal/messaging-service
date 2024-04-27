@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.magnuspaal.messagingservice.chat.Chat;
 import com.magnuspaal.messagingservice.chatuser.ChatUser;
 import com.magnuspaal.messagingservice.common.BaseEntity;
+import com.magnuspaal.messagingservice.image.ChatImage;
 import com.magnuspaal.messagingservice.message.ChatMessage;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -43,6 +44,10 @@ public class User extends BaseEntity {
   @JsonIgnore
   @OneToMany(mappedBy = "sender")
   private List<ChatMessage> sentMessages;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "user")
+  private List<ChatImage> chatImage;
 
   public User(Long id, String firstName, String lastName, String email, String username) {
     this.id = id;

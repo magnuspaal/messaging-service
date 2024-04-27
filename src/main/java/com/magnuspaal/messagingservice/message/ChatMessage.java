@@ -3,6 +3,7 @@ package com.magnuspaal.messagingservice.message;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.magnuspaal.messagingservice.chat.Chat;
 import com.magnuspaal.messagingservice.common.BaseEntity;
+import com.magnuspaal.messagingservice.image.ChatImage;
 import com.magnuspaal.messagingservice.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -21,15 +22,8 @@ import java.nio.charset.StandardCharsets;
 @SQLRestriction("deleted_at IS NULL")
 public class ChatMessage extends BaseEntity  {
   @Id
-  @SequenceGenerator(
-      name = "message_sequence",
-      sequenceName = "message_sequence",
-      allocationSize = 1
-  )
-  @GeneratedValue(
-      strategy = GenerationType.SEQUENCE,
-      generator = "message_sequence"
-  )
+  @SequenceGenerator(name = "message_sequence", sequenceName = "message_sequence", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "message_sequence")
   private Long id;
 
   @NotNull
@@ -57,11 +51,16 @@ public class ChatMessage extends BaseEntity  {
   @Transient
   private Long chatId;
 
+  @OneToOne
+  @JoinColumn(name = "image_id", referencedColumnName = "id")
+  private ChatImage chatImage;
+
   @PostLoad
   private void postLoad() {
     this.chatId = chat.getId();
   }
 
+  // TEXT
   public ChatMessage(@NotNull Long chatMessageId, Long userEncryptionVersion, byte[] content, User sender, User owner, Chat chat) {
     this.chatMessageId = chatMessageId;
     this.userEncryptionVersion = userEncryptionVersion;
@@ -70,6 +69,17 @@ public class ChatMessage extends BaseEntity  {
     this.sender = sender;
     this.owner = owner;
     this.chat = chat;
+  }
+
+  // IMAGE
+  public ChatMessage(@NotNull Long chatMessageId, ChatImage chatImage, User sender, User owner, Chat chat) {
+    this.chatMessageId = chatMessageId;
+    this.chatImage = chatImage;
+    this.type = ChatMessageType.image.toString();
+    this.sender = sender;
+    this.owner = owner;
+    this.chat = chat;
+    this.chatId = chat.getId();
   }
 
   public ChatMessage(ChatMessageExceptionMessage content, ChatMessageType type, User sender, User owner, Chat chat) {

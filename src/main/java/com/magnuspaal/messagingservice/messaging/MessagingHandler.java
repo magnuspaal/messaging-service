@@ -6,6 +6,7 @@ import com.magnuspaal.messagingservice.chatuser.ChatUserService;
 import com.magnuspaal.messagingservice.chatuser.seenmessagesrange.SeenMessagesRange;
 import com.magnuspaal.messagingservice.controllers.exception.exceptions.NoUserEncryptionException;
 import com.magnuspaal.messagingservice.controllers.record.UserEncryptedMessage;
+import com.magnuspaal.messagingservice.image.ChatImage;
 import com.magnuspaal.messagingservice.message.ChatMessage;
 import com.magnuspaal.messagingservice.message.ChatMessageExceptionMessage;
 import com.magnuspaal.messagingservice.message.ChatMessageType;
@@ -132,5 +133,10 @@ public class MessagingHandler {
         template.convertAndSendToUser(user.getId().toString(),"/topic/message", message);
       }
     }
+  }
+
+  public void handleImageMessage(Chat chat, User sender, User user, ChatImage chatImage, Long chatMessageId) {
+    ChatMessage message = messageService.createMessage(new ChatMessage(chatMessageId, chatImage, sender, user, chat));
+    template.convertAndSendToUser(user.getId().toString(),"/topic/message", message);
   }
 }

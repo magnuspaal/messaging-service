@@ -1,5 +1,7 @@
 package com.magnuspaal.messagingservice.utils;
 
+import com.magnuspaal.messagingservice.userencryption.UserEncryption;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -7,11 +9,11 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PSource;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.MGF1ParameterSpec;
+import java.security.spec.X509EncodedKeySpec;
 
 public class RSAUtil {
   public static byte[] encrypt(String message, Key publicKey) {
@@ -24,6 +26,16 @@ public class RSAUtil {
       return encryptCipher.doFinal(secretMessageBytes);
     } catch (NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException |
              InvalidKeyException | InvalidAlgorithmParameterException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static PublicKey getPublicKey(UserEncryption userEncryption) {
+    try {
+      KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+      EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(userEncryption.getPublicKey());
+      return keyFactory.generatePublic(publicKeySpec);
+    } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
       throw new RuntimeException(e);
     }
   }

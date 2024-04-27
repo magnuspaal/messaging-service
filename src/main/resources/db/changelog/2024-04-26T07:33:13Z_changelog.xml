@@ -1,0 +1,14 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="mpaal (generated)" id="1714116797401-1">
+        <addColumn tableName="chat_message">
+            <column name="image_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1714116797401-2">
+        <addUniqueConstraint columnNames="image_id" constraintName="UC_CHAT_MESSAGEIMAGE_ID_COL" tableName="chat_message"/>
+    </changeSet>
+    <changeSet author="mpaal (generated)" id="1714116797401-3">
+        <addForeignKeyConstraint baseColumnNames="image_id" baseTableName="chat_message" constraintName="FK3usatnvn8u675rmbnwmt0oxn6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="chat_image" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

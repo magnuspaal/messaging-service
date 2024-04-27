@@ -1,13 +1,8 @@
 package com.magnuspaal.messagingservice.utils;
 
 import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import javax.crypto.spec.*;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
@@ -20,6 +15,12 @@ public class AESUtil {
     KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 1000, 256);
     return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
   }
+
+  public static SecretKey generateKey() throws NoSuchAlgorithmException {
+    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+    keyGenerator.init(256);
+    return keyGenerator.generateKey();
+  };
 
   public static byte[] encrypt(byte[] input, SecretKey key, IvParameterSpec iv) throws NoSuchPaddingException, NoSuchAlgorithmException,
       InvalidAlgorithmParameterException, InvalidKeyException,
