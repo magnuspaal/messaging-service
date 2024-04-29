@@ -31,11 +31,13 @@ public class ChatImage extends BaseEntity {
   @JsonIgnore
   @OneToOne(mappedBy = "chatImage")
   private ChatMessage chatMessage;
+  private Integer ratio;
 
-  public ChatImage(User user, byte[] key, byte[] iv, String filename) {
+  public ChatImage(User user, byte[] key, byte[] iv, String filename, int imageRatio) {
     this.user = user;
     this.key = key;
     this.iv = iv;
     this.filename = filename;
+    this.ratio = imageRatio;
   }
 }

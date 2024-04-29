@@ -70,7 +70,7 @@ public class FileController {
       byte[] encryptedKey = RSAUtil.encrypt(aesKeyString, publicKey);
 
       // Save encrypted symmetric key and image filename
-      ChatImage chatImage = new ChatImage(user, encryptedKey, aesEncryptionData.iv().getIV(), compressedImage.filename());
+      ChatImage chatImage = new ChatImage(user, encryptedKey, aesEncryptionData.iv().getIV(), compressedImage.filename(), compressedImage.imageRatio());
       chatImageRepository.save(chatImage);
 
       userChatImages.add(new UserChatImage(user, chatImage));
