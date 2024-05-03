@@ -19,6 +19,10 @@ public class MessageService {
     return messageRepository.save(message);
   }
 
+  public List<ChatMessage> getChatMessage(Chat chat, Long id) {
+    return messageRepository.findByChatAndChatMessageId(chat, id).orElse(null);
+  }
+
   public List<ChatMessage> getChatMessages(User owner, Chat chat, Integer limit, Integer offset) {
     return messageRepository.findChatMessages(owner, chat, limit, offset).orElse(new ArrayList<>());
   }

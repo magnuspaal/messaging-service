@@ -15,4 +15,5 @@ public class MessageRequest {
   private ChatMessageType type;
   private String from;
   private String to;
+  private Long chatMessageId;
 }

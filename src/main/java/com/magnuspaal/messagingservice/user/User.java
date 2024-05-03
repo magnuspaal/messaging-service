@@ -6,6 +6,7 @@ import com.magnuspaal.messagingservice.chatuser.ChatUser;
 import com.magnuspaal.messagingservice.common.BaseEntity;
 import com.magnuspaal.messagingservice.image.ChatImage;
 import com.magnuspaal.messagingservice.message.ChatMessage;
+import com.magnuspaal.messagingservice.messagereaction.MessageReaction;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,6 +49,10 @@ public class User extends BaseEntity {
   @JsonIgnore
   @OneToMany(mappedBy = "user")
   private List<ChatImage> chatImage;
+
+  @OneToMany(mappedBy = "user")
+  @JsonIgnore
+  private List<MessageReaction> messageReactions;
 
   public User(Long id, String firstName, String lastName, String email, String username) {
     this.id = id;

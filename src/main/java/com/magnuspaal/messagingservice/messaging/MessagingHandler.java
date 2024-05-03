@@ -11,6 +11,8 @@ import com.magnuspaal.messagingservice.message.ChatMessage;
 import com.magnuspaal.messagingservice.message.ChatMessageExceptionMessage;
 import com.magnuspaal.messagingservice.message.ChatMessageType;
 import com.magnuspaal.messagingservice.message.MessageService;
+import com.magnuspaal.messagingservice.messagereaction.MessageReaction;
+import com.magnuspaal.messagingservice.messagereaction.MessageReactionService;
 import com.magnuspaal.messagingservice.user.User;
 import com.magnuspaal.messagingservice.user.UserService;
 import com.magnuspaal.messagingservice.userencryption.UserEncryption;
@@ -40,6 +42,7 @@ public class MessagingHandler {
   private final MessageService messageService;
   private final ChatUserService chatUserService;
   private final UserService userService;
+  private final MessageReactionService messageReactionService;
 
   public void handleTextMessage(Chat chat, User sender, String content) {
     Long chatMessageId = messageService.getChatMessageCount(chat) + 1;
@@ -138,5 +141,21 @@ public class MessagingHandler {
   public void handleImageMessage(Chat chat, User sender, User user, ChatImage chatImage, Long chatMessageId) {
     ChatMessage message = messageService.createMessage(new ChatMessage(chatMessageId, chatImage, sender, user, chat));
     template.convertAndSendToUser(user.getId().toString(),"/topic/message", message);
+  }
+
+  public void handleReactionMessage(Chat chat, Long chatMessageId, User sender, String reaction) {
+    List<ChatMessage> chatMessages = messageService.getChatMessage(chat, chatMessageId);
+    for (ChatMessage chatMessage: chatMessages) {
+       MessageReaction messageReaction = messageReactionService.createMessageReaction(new MessageReaction(chatMessage, reaction, sender));
+       ChatMessage message = new ChatMessage(
+           messageReaction.getId(),
+           chatMessageId,
+           sender,
+           chat,
+           messageReaction.getReaction(),
+           messageReaction.getCreatedAt()
+       );
+       template.convertAndSendToUser(String.valueOf(chatMessage.getOwner().getId()),"/topic/message", message);
+    }
   }
 }

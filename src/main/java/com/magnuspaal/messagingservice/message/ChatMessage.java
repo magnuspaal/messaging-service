@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.magnuspaal.messagingservice.chat.Chat;
 import com.magnuspaal.messagingservice.common.BaseEntity;
 import com.magnuspaal.messagingservice.image.ChatImage;
+import com.magnuspaal.messagingservice.messagereaction.MessageReaction;
 import com.magnuspaal.messagingservice.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +14,9 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -55,6 +59,9 @@ public class ChatMessage extends BaseEntity  {
   @JoinColumn(name = "image_id", referencedColumnName = "id")
   private ChatImage chatImage;
 
+  @OneToMany(mappedBy = "chatMessage", fetch = FetchType.EAGER)
+  private List<MessageReaction> messageReactions = new ArrayList<>();
+
   @PostLoad
   private void postLoad() {
     this.chatId = chat.getId();
@@ -80,6 +87,18 @@ public class ChatMessage extends BaseEntity  {
     this.owner = owner;
     this.chat = chat;
     this.chatId = chat.getId();
+  }
+
+  // Reaction
+  public ChatMessage(Long id, Long chatMessageId, User sender, Chat chat, String reaction, LocalDateTime createdAt) {
+    this.id = id;
+    this.type = ChatMessageType.reaction.toString();
+    this.chatMessageId = chatMessageId;
+    this.sender = sender;
+    this.chat = chat;
+    this.chatId = chat.getId();
+    this.content = reaction.getBytes();
+    this.setCreatedAt(createdAt);
   }
 
   public ChatMessage(ChatMessageExceptionMessage content, ChatMessageType type, User sender, User owner, Chat chat) {

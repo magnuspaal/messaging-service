@@ -4,6 +4,7 @@ public enum ChatMessageType {
   exception,
   text,
   image,
+  reaction,
   writing,
   writing_end,
   seen,

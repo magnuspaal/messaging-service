@@ -22,4 +22,10 @@ public interface MessageRepository extends JpaRepository<ChatMessage, Long> {
   Optional<Long> findChatMessageCount(
       @Param("chat") Chat chat
   );
+
+  @Query("SELECT m FROM ChatMessage m WHERE m.chat=:chat AND m.chatMessageId=:chatMessageId")
+  Optional<List<ChatMessage>> findByChatAndChatMessageId(
+      @Param("chat") Chat chat,
+      @Param("chatMessageId") Long chatMessageId
+  );
 }
